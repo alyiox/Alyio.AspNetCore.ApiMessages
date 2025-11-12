@@ -70,7 +70,6 @@ jobs:
         run: |
           TAG_VERSION="${{ github.ref_name }}"
           dotnet pack --output nupkg -p:PackageVersion=$TAG_VERSION
-          dotnet pack --output nupkg -p:VersionPrefix=$TAG_VERSION -p:VersionSuffix=preview.10 -p:TargetFrameworks=net10.0
 
       - name: List NuGet Packages (nupkg/*)
         run: ls -l nupkg/*
