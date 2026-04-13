@@ -1,7 +1,5 @@
 // MIT License
 
-#if NET8_0_OR_GREATER
-
 using Alyio.AspNetCore.ApiMessages.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -33,5 +31,3 @@ public static class EndpointFilterExtensions
         return builder;
     }
 }
-
-#endif

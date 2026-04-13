@@ -130,19 +130,12 @@ public class ApiMessageHandlerMiddlewareTests
 
                 builder.ConfigureServices(services =>
                 {
-#if NET8_0_OR_GREATER
                     services.AddApiMessages();
-#endif
                 });
 
                 builder.Configure(app =>
                 {
-#if NET8_0_OR_GREATER
                     app.UseExceptionHandler();
-#else
-                    app.UseExceptionHandler(new ExceptionHandlerOptions { ExceptionHandler = ExceptionHandler.WriteUnhandledMessageAsync });
-                    app.UseApiMessage();
-#endif
                     configureApp(app);
                 });
             })

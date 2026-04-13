@@ -13,7 +13,6 @@ A lightweight ASP.NET Core library that seamlessly integrates with ASP.NET Core'
 - [Usage](#usage)
   - [Configuration](#configuration)
     - [For .NET 8.0+](#for-net-80)
-    - [For the Legacy .NET 6.0](#for-the-legacy-net-60)
   - [Defining and Throwing API Messages](#defining-and-throwing-api-messages)
   - [Using Action Filters (for Controller-Based APIs)](#using-action-filters-for-controller-based-apis)
   - [Using Endpoint Filters (for .NET 8.0+ Minimal APIs)](#using-endpoint-filters-for-net-80-minimal-apis)
@@ -39,13 +38,13 @@ By utilizing `Alyio.AspNetCore.ApiMessages`, the development of reliable, mainta
 
 * **Custom Exception Definition**: Enables defining custom, domain-specific API messages by implementing the `IApiMessage` interface for clear error representation.
 
-* **Middleware-Based Handling**: Provides comprehensive middleware-based exception handling and Problem Details generation for both legacy (.NET 6.0 using `ApiMessageHandlerMiddleware`) and modern (.NET 8.0+ leveraging `ExceptionHandlerMiddleware`) ASP.NET Core applications.
+* **Middleware-Based Handling**: Provides comprehensive middleware-based exception handling and Problem Details generation by leveraging `ExceptionHandlerMiddleware` in modern ASP.NET Core applications.
 
 * **Attribute-Based Handling**: Apply `ApiMessageAttribute` directly to controllers/action methods or register it globally as an action filter for targeted exception handling.
 
 * **Endpoint Filter Integration**: Apply API message handling directly to individual minimal API endpoints or to groups of endpoints (for .NET 8.0+) using the `AddApiMessage` *endpoint filter* extension.
 
-* **Dual-Targeting**: Supports the legacy .NET 6.0, and .NET 8.0+ (including .NET 9.0 and .NET 10.0) with optimized configurations for each.
+* **Target Frameworks**: Supports .NET 8.0+ (including .NET 9.0 and .NET 10.0).
 
 ## Installation
 
@@ -127,17 +126,13 @@ A `GET` request to `/api/products/0` will trigger the `NotFoundException`, and t
 }
 ```
 
-This configuration ensures that all `IApiMessage` exceptions are handled consistently across the application. For further details on defining custom exceptions, using attribute-based filters, or configuring for legacy runtimes, refer to the **Usage** section.
+This configuration ensures that all `IApiMessage` exceptions are handled consistently across the application. For further details on defining custom exceptions or using attribute-based filters, refer to the **Usage** section.
 
 ## Usage
-
-* **Prioritize .NET 8.0+**: If applicable, target .NET 8.0+ to leverage the latest ASP.NET Core features like `IExceptionHandler` and `IEndpointFilter`, which offer more streamlined and performant error handling.
 
 * **Global Exception Handling**: Always configure a global exception handler to ensure all unhandled exceptions across the application result in consistent Problem Details responses.
 
     * For .NET 8.0+, use `app.UseExceptionHandler()` in conjunction with `builder.Services.AddApiMessages()`.
-
-    * For .NET 6.0, use `app.UseExceptionHandler(ExceptionHandler.WriteUnhandledMessageAsync)` and `app.UseApiMessage()`.
 
 * **Define Custom API Messages**: For domain-specific errors that require a standardized Problem Details response, create custom exceptions that implement the `IApiMessage` interface to define specific `type`, `title`, and `detail` for business logic errors.
 
@@ -147,7 +142,7 @@ This configuration ensures that all `IApiMessage` exceptions are handled consist
 
     * For Minimal APIs or endpoint routing in .NET 8.0+, apply `.AddApiMessage()` to specific endpoints.
 
-* **Security**: Information exposed in Problem Details responses should be reviewed. Avoid leaking sensitive exception details (e.g., stack traces) in production environments. The library's default behavior for generic exceptions (when handled by `ExceptionHandler.WriteUnhandledMessageAsync` in .NET 6.0) provides a basic message, but review what information is appropriate for the production environment.
+* **Security**: Information exposed in Problem Details responses should be reviewed. Avoid leaking sensitive exception details (e.g., stack traces) in production environments, and ensure messages are appropriate for production use.
 
 ### Configuration
 
@@ -178,30 +173,6 @@ app.MapControllers();
 app.Run();
 ```
 
-#### For the Legacy .NET 6.0
-
-The primary approach for configuring API message handling in legacy .NET 6.0 applications involves utilizing middleware and the traditional exception handler.
-
-In `Program.cs`:
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-app.UseExceptionHandler(new ExceptionHandlerOptions { ExceptionHandler = ExceptionHandler.WriteUnhandledMessageAsync }); // Handles unhandled exceptions
-app.UseApiMessage(); // Catches IApiMessage exceptions
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();
-```
 
 ### Defining and Throwing API Messages
 
@@ -541,15 +512,14 @@ Version 3.0 introduces significant breaking changes as part of its modernization
 
 *   **Public API**: The `BadRequestMessage` class and other similar classes have been replaced by new exception classes, such as `BadRequestException`.
 *   **`IApiMessage` Interface**: The interface is simplified to expose a single `ProblemDetails` property.
-*   **Configuration**: The setup method is changed. The legacy `UseApiMessage` middleware is available for .NET 6 but is not the recommended approach for modern applications.
+*   **Configuration**: The setup method is changed to use `builder.Services.AddApiMessages()` with `app.UseExceptionHandler()` for global exception handling.
 *   **JSON Response Format**: The error response format is changed from a custom schema to the standard `ProblemDetails` JSON object. This may affect clients expecting the old format.
 *   **Validation Error Structure**: The structure of validation errors within the `ProblemDetails` object is updated to align with ASP.NET Core conventions.
 
 ### API Developer Migration (Server-Side)
 
 1.  **Configuration (`Program.cs`)**:
-    *   **For .NET 8+ (Recommended)**: `app.UseApiMessageHandler()` should be replaced with `builder.Services.AddApiMessages()` and `app.UseExceptionHandler()`.
-    *   **For .NET 6**: The old `app.UseApiMessageHandler()` should be replaced with the new `app.UseApiMessage()`.
+    *   `app.UseApiMessageHandler()` should be replaced with `builder.Services.AddApiMessages()` and `app.UseExceptionHandler()`.
 
 2.  **Exception Classes**:
     *   All usages of old message classes (e.g., `new BadRequestMessage()`) are to be replaced with their new exception equivalents (`new BadRequestException()`).

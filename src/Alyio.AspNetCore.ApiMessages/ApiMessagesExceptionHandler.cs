@@ -1,7 +1,5 @@
 // MIT License
 
-#if NET8_0_OR_GREATER
-
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,5 +56,3 @@ public sealed class ApiMessagesExceptionHandler : IExceptionHandler
         return false;
     }
 }
-
-#endif

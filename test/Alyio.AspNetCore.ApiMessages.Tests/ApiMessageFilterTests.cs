@@ -1,7 +1,5 @@
 // MIT License
 
-#if NET8_0_OR_GREATER
-
 using System.Net;
 using System.Net.Http.Json;
 using Alyio.AspNetCore.ApiMessages.Extensions;
@@ -85,5 +83,3 @@ public class ApiMessageFilterTests
         _ => new InvalidOperationException("Should not happen in this test.")
     };
 }
-
-#endif

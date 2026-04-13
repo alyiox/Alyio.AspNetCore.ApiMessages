@@ -100,9 +100,7 @@ public class ApiMessageAttributeTests
             })
             .ConfigureServices((ctx, services) =>
             {
-#if NET8_0_OR_GREATER
                 services.AddApiMessages();
-#endif
                 services.AddControllers().AddApplicationPart(typeof(TestController).Assembly);
             })
             .Build();

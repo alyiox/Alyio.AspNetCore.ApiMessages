@@ -21,7 +21,6 @@ public sealed class ApiMessageAttribute : ExceptionFilterAttribute
     {
         if (!context.HttpContext.Response.HasStarted && context.Exception is IApiMessage message)
         {
-#if NET8_0_OR_GREATER
             var problemDetailsService = context.HttpContext.RequestServices.GetRequiredService<IProblemDetailsService>();
             context.HttpContext.Response.StatusCode = message.ProblemDetails.Status ?? StatusCodes.Status500InternalServerError;
             await problemDetailsService.WriteAsync(new ProblemDetailsContext
@@ -30,9 +29,6 @@ public sealed class ApiMessageAttribute : ExceptionFilterAttribute
                 ProblemDetails = message.ProblemDetails
             });
 
-#else
-            await context.HttpContext.WriteProblemDetailsAsync(message);
-#endif
             context.ExceptionHandled = true;
         }
     }
