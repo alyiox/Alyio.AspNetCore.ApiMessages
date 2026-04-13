@@ -12,10 +12,9 @@ A lightweight ASP.NET Core library that seamlessly integrates with ASP.NET Core'
 - [Quick Start](#quick-start)
 - [Usage](#usage)
   - [Configuration](#configuration)
-    - [For .NET 8.0+](#for-net-80)
   - [Defining and Throwing API Messages](#defining-and-throwing-api-messages)
   - [Using Action Filters (for Controller-Based APIs)](#using-action-filters-for-controller-based-apis)
-  - [Using Endpoint Filters (for .NET 8.0+ Minimal APIs)](#using-endpoint-filters-for-net-80-minimal-apis)
+  - [Using Endpoint Filters (for Minimal APIs)](#using-endpoint-filters-for-minimal-apis)
   - [Built-in API Message Examples](#built-in-api-message-examples)
   - [Handling 201 Created Responses with CreatedMessage](#handling-201-created-responses-with-createdmessage)
 - [Migration Guide from 2.x to 3.x](#migration-guide-from-2x-to-3x)
@@ -38,13 +37,13 @@ By utilizing `Alyio.AspNetCore.ApiMessages`, the development of reliable, mainta
 
 * **Custom Exception Definition**: Enables defining custom, domain-specific API messages by implementing the `IApiMessage` interface for clear error representation.
 
-* **Middleware-Based Handling**: Provides comprehensive middleware-based exception handling and Problem Details generation by leveraging `ExceptionHandlerMiddleware` in modern ASP.NET Core applications.
+* **Middleware-Based Handling**: Provides comprehensive middleware-based exception handling and Problem Details generation by leveraging `ExceptionHandlerMiddleware`.
 
 * **Attribute-Based Handling**: Apply `ApiMessageAttribute` directly to controllers/action methods or register it globally as an action filter for targeted exception handling.
 
-* **Endpoint Filter Integration**: Apply API message handling directly to individual minimal API endpoints or to groups of endpoints (for .NET 8.0+) using the `AddApiMessage` *endpoint filter* extension.
+* **Endpoint Filter Integration**: Apply API message handling directly to individual minimal API endpoints or to groups of endpoints using the `AddApiMessage` *endpoint filter* extension.
 
-* **Target Frameworks**: Supports .NET 8.0+ (including .NET 9.0 and .NET 10.0).
+* **Target Frameworks**: Supports .NET 8.0, .NET 9.0, and .NET 10.0.
 
 ## Installation
 
@@ -56,7 +55,7 @@ dotnet add package Alyio.AspNetCore.ApiMessages
 
 ## Quick Start
 
-This guide demonstrates configuring global exception handling for a .NET 8.0+ application to automatically convert exceptions into standardized `ProblemDetails` responses.
+This guide demonstrates configuring global exception handling to automatically convert exceptions into standardized `ProblemDetails` responses.
 
 **1. Configure Services and Middleware in `Program.cs`**
 
@@ -130,9 +129,7 @@ This configuration ensures that all `IApiMessage` exceptions are handled consist
 
 ## Usage
 
-* **Global Exception Handling**: Always configure a global exception handler to ensure all unhandled exceptions across the application result in consistent Problem Details responses.
-
-    * For .NET 8.0+, use `app.UseExceptionHandler()` in conjunction with `builder.Services.AddApiMessages()`.
+* **Global Exception Handling**: Always configure a global exception handler to ensure all unhandled exceptions across the application result in consistent Problem Details responses. Use `app.UseExceptionHandler()` in conjunction with `builder.Services.AddApiMessages()`.
 
 * **Define Custom API Messages**: For domain-specific errors that require a standardized Problem Details response, create custom exceptions that implement the `IApiMessage` interface to define specific `type`, `title`, and `detail` for business logic errors.
 
@@ -140,19 +137,13 @@ This configuration ensures that all `IApiMessage` exceptions are handled consist
 
     * Use `[ApiMessage]` attribute on controllers or individual action methods for handling `IApiMessage` exceptions thrown within the methods.
 
-    * For Minimal APIs or endpoint routing in .NET 8.0+, apply `.AddApiMessage()` to specific endpoints.
+    * For Minimal APIs or endpoint routing, apply `.AddApiMessage()` to specific endpoints.
 
 * **Security**: Information exposed in Problem Details responses should be reviewed. Avoid leaking sensitive exception details (e.g., stack traces) in production environments, and ensure messages are appropriate for production use.
 
 ### Configuration
 
-The library provides different configuration patterns based on the target .NET framework.
-
-#### For .NET 8.0+
-
-The primary approach for configuring API message handling involves combining `services.AddApiMessages()` and `app.UseExceptionHandler()` to enable comprehensive API message handling.
-
-In `Program.cs`:
+Configure API message handling by combining `services.AddApiMessages()` and `app.UseExceptionHandler()` in `Program.cs`.
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -172,7 +163,6 @@ app.MapControllers();
 
 app.Run();
 ```
-
 
 ### Defining and Throwing API Messages
 
@@ -299,9 +289,9 @@ public IActionResult Create([FromBody] MyModel model)
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ApiMessageAttribute)));
 ```
 
-### Using Endpoint Filters (for .NET 8.0+ Minimal APIs)
+### Using Endpoint Filters (for Minimal APIs)
 
-Apply API message handling directly to individual minimal API endpoints or to groups of endpoints (for .NET 8.0+) using the `AddApiMessage` *endpoint filter* extension.
+Apply API message handling directly to individual minimal API endpoints or to groups of endpoints using the `AddApiMessage` *endpoint filter* extension.
 
 ```csharp
 app.MapGet("/items/{id}", (int id) =>
