@@ -2,6 +2,7 @@
 
 ![Build Status](https://github.com/ousiax/Alyio.AspNetCore.ApiMessages/actions/workflows/ci.yml/badge.svg?branch=main)
 [![NuGet Version](https://img.shields.io/nuget/v/Alyio.AspNetCore.ApiMessages.svg)](https://www.nuget.org/packages/Alyio.AspNetCore.ApiMessages/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 A lightweight ASP.NET Core library that seamlessly integrates with ASP.NET Core's error handling mechanisms to standardize API error handling and messages into Problem Details for HTTP APIs responses.
 
