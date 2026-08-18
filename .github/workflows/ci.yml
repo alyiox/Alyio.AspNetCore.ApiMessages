@@ -1,4 +1,4 @@
-name: Alyio.AspNetCore.ApiMessages
+name: ci
 
 on:
   push:
