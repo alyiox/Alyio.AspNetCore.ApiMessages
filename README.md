@@ -1,6 +1,6 @@
 # Alyio.AspNetCore.ApiMessages
 
-![Build Status](https://github.com/ousiax/Alyio.AspNetCore.ApiMessages/actions/workflows/ci.yml/badge.svg?branch=main)
+![Build Status](https://github.com/alyiox/Alyio.AspNetCore.ApiMessages/actions/workflows/ci.yml/badge.svg?branch=main)
 [![NuGet Version](https://img.shields.io/nuget/v/Alyio.AspNetCore.ApiMessages.svg)](https://www.nuget.org/packages/Alyio.AspNetCore.ApiMessages/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
